@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Simulator -- Login Attack Detector</title>
+    <meta name="description" content="Educational login simulator. Test demo credentials and watch how login events feed the brute-force detection engine.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="login-simulator-page">
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <aside class="sidebar">
+        <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+            <div class="brand-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+            </div>
+            <div>
+                <h2>Login<span>Attack</span></h2>
+                <p style="font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">Detector</p>
+            </div>
+        </a>
+
+        <div class="nav-section-title">Navigation</div>
+        <div class="nav-group">
+            <a href="{{ url_for('dashboard') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect width="7" height="7" x="3" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="14" rx="1.5"/>
+                    <rect width="7" height="7" x="3" y="14" rx="1.5"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="{{ url_for('attack_detection') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>Attack Detection</span>
+            </a>
+            <a href="{{ url_for('log_analysis') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <span>Log Analysis</span>
+            </a>
+            <a href="{{ url_for('login_simulator') }}" class="nav active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Login Simulator</span>
+            </a>
+            <a href="{{ url_for('settings') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="status-dot-pulse"></div>
+            <div>
+                <p style="font-weight: 700; color: var(--text-main); font-size: 13px;">Demo Mode</p>
+                <p style="font-size: 11px; color: var(--text-secondary);">Educational Only</p>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header>
+            <div class="header-left">
+                <div class="eyebrow">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    Authentication Simulation
+                </div>
+                <h1>Login Simulator</h1>
+                <p class="subtitle">Submit demo login attempts and watch the detection engine respond in real time.</p>
+            </div>
+            <div class="header-right">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <div class="login-simulator-wrap">
+            <div class="login-sim-card tilt-card">
+
+                <div class="login-sim-header">
+                    <div class="login-sim-icon">
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
+                    <h2>Demo Login</h2>
+                    <p>Enter the demo credentials below to simulate a login attempt.
+                        Every attempt is recorded and analysed by the detection engine.</p>
+                </div>
+
+                {% if result %}
+                <div id="simResult" class="login-sim-result {{ result.status }}" role="alert">
+                    {% if result.status == "success" %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                    {% else %}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+                        <line x1="12" y1="16" x2="12.01" y2="16"/>
+                    </svg>
+                    {% endif %}
+                    <span>{{ result.message }}</span>
+                </div>
+                {% endif %}
+
+                <form id="loginSimForm" action="{{ url_for('login_simulator') }}" method="POST" novalidate>
+
+                    <div class="login-sim-field">
+                        <label for="simUsername">Username</label>
+                        <input
+                            type="text"
+                            id="simUsername"
+                            name="username"
+                            class="login-sim-input"
+                            placeholder="e.g. demo"
+                            autocomplete="username"
+                            required
+                            spellcheck="false"
+                            maxlength="128"
+                            value="{{ request.form.get('username', '') }}"
+                        >
+                    </div>
+
+                    <div class="login-sim-field">
+                        <label for="simPassword">Password</label>
+                        <div class="login-sim-password-wrap">
+                            <input
+                                type="password"
+                                id="simPassword"
+                                name="password"
+                                class="login-sim-input"
+                                placeholder="Enter password"
+                                autocomplete="current-password"
+                                required
+                                maxlength="256"
+                            >
+                            <button
+                                type="button"
+                                id="togglePwBtn"
+                                class="login-sim-toggle-pw"
+                                aria-label="Show password"
+                                title="Show / hide password"
+                            >
+                                <svg id="iconEye" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                    <circle cx="12" cy="12" r="3"/>
+                                </svg>
+                                <svg id="iconEyeOff" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    style="display:none;">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="loginSimBtn" type="submit" class="btn btn-primary login-sim-submit">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                            <polyline points="10 17 15 12 10 7"/>
+                            <line x1="15" y1="12" x2="3" y2="12"/>
+                        </svg>
+                        Submit Login Attempt
+                    </button>
+                </form>
+
+                <div class="login-sim-divider"></div>
+
+                <div class="login-sim-demo-box">
+                    <h4>
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" style="vertical-align:middle; margin-right:4px;">
+                            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        Demo Credentials -- Educational Use Only
+                    </h4>
+                    <dl>
+                        <dt>Account&nbsp;1</dt>
+                        <dd>demo / Demo@1234</dd>
+                        <dt>Account&nbsp;2</dt>
+                        <dd>admin / Admin@5678</dd>
+                    </dl>
+                    <p style="margin-top:10px; font-size:11px; color:var(--text-muted); line-height:1.5;">
+                        These are fictional demo accounts. No real credentials are stored or
+                        transmitted. Passwords are verified against server-side SHA-256 hashes only.
+                    </p>
+                </div>
+
+                <div style="margin-top:14px; padding:12px 14px; background:var(--warning-subtle);
+                    border:1px solid rgba(245,158,11,0.3); border-radius:var(--radius-md);
+                    font-size:12px; color:#92400E; line-height:1.55;">
+                    <strong>Brute-Force Test:</strong> Submit 5 or more failed attempts within the
+                    configured time window (default 60 s) to trigger a HIGH-risk alert on the Dashboard.
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script>
+        (function () {
+            var btn = document.getElementById("togglePwBtn");
+            var field = document.getElementById("simPassword");
+            var iconEye = document.getElementById("iconEye");
+            var iconEyeOff = document.getElementById("iconEyeOff");
+            if (!btn || !field) return;
+            btn.addEventListener("click", function () {
+                var hidden = field.type === "password";
+                field.type = hidden ? "text" : "password";
+                iconEye.style.display = hidden ? "none" : "";
+                iconEyeOff.style.display = hidden ? "" : "none";
+                btn.setAttribute("aria-label", hidden ? "Hide password" : "Show password");
+            });
+            btn.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") { e.preventDefault(); btn.click(); }
+            });
+        }());
+        (function () {
+            var result = document.getElementById("simResult");
+            if (result) { result.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
+        }());
+    </script>
+</body>
+
+</html>

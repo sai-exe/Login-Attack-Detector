@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Analysis | Login Attack Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Ambient background glow elements -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+            <div class="brand-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                </svg>
+            </div>
+            <div>
+                <h2>Login<span>Attack</span></h2>
+                <p style="font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">Detector</p>
+            </div>
+        </a>
+
+
+        <div class="nav-section-title">Navigation</div>
+        <div class="nav-group">
+            <a href="{{ url_for('dashboard') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect width="7" height="7" x="3" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="3" rx="1.5"/>
+                    <rect width="7" height="7" x="14" y="14" rx="1.5"/>
+                    <rect width="7" height="7" x="3" y="14" rx="1.5"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('attack_detection') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span>Attack Detection</span>
+            </a>
+
+            <a href="{{ url_for('log_analysis') }}" class="nav active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <span>Log Analysis</span>
+            </a>
+
+            <a href="{{ url_for('login_simulator') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span>Login Simulator</span>
+            </a>
+
+            <a href="{{ url_for('settings') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+                <span>Settings</span>
+            </a>
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="status-dot-pulse"></div>
+            <div>
+                <p style="font-weight: 700; color: var(--text-main); font-size: 13px;">Engine Ready</p>
+                <p style="font-size: 11px; color: var(--text-secondary);">Query Filter Active</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main">
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <div class="eyebrow">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    Audit Trail Investigation
+                </div>
+                <h1>Log Analysis & Inspection</h1>
+                <p class="subtitle">Search, filter, and inspect detailed authentication activity records.</p>
+            </div>
+
+            <div class="header-right">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/>
+                    </svg>
+                    Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        {% if error %}
+        <div class="error-message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+            <div><strong>Analysis Error:</strong> {{ error }}</div>
+        </div>
+        {% elif data %}
+
+        <!-- Stat Cards -->
+        <section class="stats" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+            <div class="stat-card accent-purple tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Total Records</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" id="totalRecords" data-target="{{ data.records|length }}">{{ data.records|length }}</h2>
+                <div class="muted">
+                    <span>Parsed from active CSV</span>
+                </div>
+            </div>
+
+            <div class="stat-card accent-success tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Successful Logins</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" data-target="{{ data.successful_attempts }}">{{ data.successful_attempts }}</h2>
+                <div class="muted">
+                    <span>Authorized authentications</span>
+                </div>
+            </div>
+
+            <div class="stat-card accent-threat tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Failed Logins</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" data-target="{{ data.failed_attempts }}">{{ data.failed_attempts }}</h2>
+                <div class="muted">
+                    <span>Rejected login requests</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Records Table & Filter Panel -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Authentication Records</h2>
+                    <p>Inspect log entries in chronological order.</p>
+                </div>
+                <span class="badge">CSV LOG ANALYZER</span>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div class="log-filters">
+                <div class="search-input-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search by username (e.g. admin) or IP address..."
+                        aria-label="Search username or IP address"
+                    >
+                </div>
+
+                <select id="statusFilter" aria-label="Filter by status">
+                    <option value="ALL">All Statuses</option>
+                    <option value="SUCCESS">Success Only</option>
+                    <option value="FAILED">Failed Only</option>
+                </select>
+            </div>
+
+            <div class="record-count-badge" id="recordCount" aria-live="polite">
+                Showing {{ data.records|length }} of {{ data.records|length }} records
+            </div>
+
+            <!-- Table of Logs -->
+            <div class="table-wrap">
+                <table id="logsTable">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Username</th>
+                            <th>Source IP Address</th>
+                            <th>Authentication Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in data.records %}
+                        <tr
+                            data-search="{{ record.username|lower }} {{ record.ip_address|lower }}"
+                            data-status="{{ record.status }}"
+                        >
+                            <td>
+                                <span style="font-family: var(--font-mono); color: var(--text-secondary); font-size: 12px; font-weight: 500;">
+                                    {{ record.timestamp }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--text-main);">{{ record.username }}</strong>
+                            </td>
+                            <td>
+                                <span class="code-pill">{{ record.ip_address }}</span>
+                            </td>
+                            <td>
+                                {% if record.status == "SUCCESS" %}
+                                    <span class="status-badge success">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <polyline points="20 6 9 17 4 12"/>
+                                        </svg>
+                                        SUCCESS
+                                    </span>
+                                {% else %}
+                                    <span class="risk-label high">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                                        </svg>
+                                        FAILED
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 28px; color: var(--text-muted);">
+                                No login records found in the current CSV dataset.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty Search Results Placeholder -->
+            <div id="noResults" class="empty-state" hidden style="margin-top: 16px;">
+                <div class="empty-icon" style="background: var(--primary-subtle); color: var(--primary);">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                </div>
+                <h3>No Matching Records Found</h3>
+                <p>We could not find any records matching your search query or status filter. Try clearing your search term.</p>
+            </div>
+        </section>
+
+        {% endif %}
+
+        <!-- Footer -->
+        <footer>
+            <div>LOGIN ATTACK DETECTOR &bull; <span>CYBERSECURITY DEFENSE SYSTEM</span></div>
+            <div>Educational & Analytical Dashboard</div>
+        </footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>

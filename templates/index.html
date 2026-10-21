@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Attack Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <!-- Ambient background glow elements -->
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <a href="{{ url_for('dashboard') }}" class="sidebar-brand">
+            <div class="brand-icon-wrap">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+            </div>
+            <div>
+                <h2>Login<span>Attack</span></h2>
+                <p style="font-size: 11px; color: var(--text-muted); font-weight: 700; letter-spacing: 0.3px;">Detector
+                </p>
+            </div>
+        </a>
+
+
+        <div class="nav-section-title">Navigation</div>
+        <div class="nav-group">
+            <a href="{{ url_for('dashboard') }}" class="nav active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect width="7" height="7" x="3" y="3" rx="1.5" />
+                    <rect width="7" height="7" x="14" y="3" rx="1.5" />
+                    <rect width="7" height="7" x="14" y="14" rx="1.5" />
+                    <rect width="7" height="7" x="3" y="14" rx="1.5" />
+                </svg>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{{ url_for('attack_detection') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="8" x2="12" y2="12" />
+                    <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <span>Attack Detection</span>
+            </a>
+
+            <a href="{{ url_for('log_analysis') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <span>Log Analysis</span>
+            </a>
+
+            <a href="{{ url_for('login_simulator') }}" class="nav">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <span>Login Simulator</span>
+            </a>
+        </div>
+
+        <a href="{{ url_for('settings') }}" class="nav">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="3" />
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span>Settings</span>
+        </a>
+
+        <div class="sidebar-bottom">
+            <div class="status-dot-pulse"></div>
+            <div>
+                <p style="font-weight: 700; color: var(--text-main); font-size: 13px;">Engine Ready</p>
+                <p style="font-size: 11px; color: var(--text-secondary);">CSV Sliding Window</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main">
+        {% if error %}
+        <div class="error-message">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <div><strong>Analysis Error:</strong> {{ error }}</div>
+        </div>
+        {% endif %}
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}" role="alert">
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        {% if data %}
+        <!-- Header -->
+        <header>
+            <div class="header-left">
+                <div class="eyebrow">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <circle cx="12" cy="12" r="10" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    Security Operations Center
+                </div>
+                <h1>Login Attack Detector</h1>
+                <p class="subtitle">Monitor authentication events, identify brute-force surges, and protect user
+                    accounts.</p>
+            </div>
+
+            <div class="header-right">
+                <div class="config-badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 16 14" />
+                    </svg>
+                    <span>Threshold: <strong>{{ data.max_attempts }} fails / {{ data.time_window }}s</strong></span>
+                </div>
+
+                <div class="system-status">
+                    <span class="status-dot-pulse"></span>
+                    <span>System Active</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Action Bar: Simulation & Data Controls -->
+        <section class="action-bar-card">
+            <div>
+                <p class="action-bar-title">Simulation & Quick Actions</p>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">Simulate attack traffic or
+                    normal user logins for live detection evaluation</p>
+            </div>
+
+            <div class="actions">
+                <a href="/simulate/normal" class="btn btn-secondary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <line x1="19" y1="8" x2="19" y2="14" />
+                        <line x1="22" y1="11" x2="16" y2="11" />
+                    </svg>
+                    Simulate Normal Logins
+                </a>
+
+                <a href="/simulate/attack" class="btn btn-danger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                    Simulate Brute-Force Attack
+                </a>
+
+                <a href="/reset-demo" class="btn btn-secondary"
+                    onclick="return confirm('Reset all demo logs to the original sample data?')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                    </svg>
+                    Reset Demo
+                </a>
+
+                <a href="/download-report" class="btn btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    Download CSV Report
+                </a>
+            </div>
+        </section>
+
+        <!-- CSV Upload Card -->
+        <section class="upload-card">
+            <div class="upload-info">
+                <div class="upload-icon-badge">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="12" y1="18" x2="12" y2="12" />
+                        <line x1="9" y1="15" x2="15" y2="15" />
+                    </svg>
+                </div>
+                <div>
+                    <h4>Upload Custom Login Logs</h4>
+                    <p id="fileLabelText">Accepts CSV files with headers: <code
+                            class="code-pill">timestamp, username, ip_address, status</code></p>
+                </div>
+            </div>
+
+            <form action="{{ url_for('upload_csv') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" id="csvFile" name="file" accept=".csv,text/csv" required class="file-custom-input">
+                <button type="submit" class="btn btn-primary">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="16 16 12 12 8 16" />
+                        <line x1="12" y1="12" x2="12" y2="21" />
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+                    </svg>
+                    Upload & Analyze
+                </button>
+            </form>
+        </section>
+
+        <!-- Welcome Banner -->
+        <section class="welcome-banner">
+            <div class="welcome-content">
+                <div class="eyebrow">Threat Monitoring Active</div>
+                <h2>Security Overview & Real-Time Telemetry</h2>
+                <p>Analyzing local authentication records from <strong style="color: var(--primary);">{{
+                        data.source_file }}</strong>. High failure frequencies within short time windows are
+                    automatically flagged as brute-force vectors.</p>
+            </div>
+            <div class="welcome-shield-graphic">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="m9 12 2 2 4-4" />
+                </svg>
+            </div>
+        </section>
+
+        <!-- 4 Statistics Cards (3D Tilt & Animated Counters) -->
+        <section class="stats">
+            <!-- Total Attempts -->
+            <div class="stat-card accent-purple tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Total Attempts</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                            <polyline points="10 9 9 9 8 9" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" data-target="{{ data.total_attempts }}">{{ data.total_attempts }}
+                </h2>
+                <div class="muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 6 12 12 14 14" />
+                    </svg>
+                    <span>Analyzed log records</span>
+                </div>
+            </div>
+
+            <!-- Successful Logins -->
+            <div class="stat-card accent-success tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Successful Logins</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" id="successfulCount" data-target="{{ data.successful_attempts }}">
+                    {{ data.successful_attempts }}</h2>
+                <div class="muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>Legitimate user authentications</span>
+                </div>
+            </div>
+
+            <!-- Failed Logins -->
+            <div class="stat-card accent-threat tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Failed Attempts</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="15" y1="9" x2="9" y2="15" />
+                            <line x1="9" y1="9" x2="15" y2="15" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" id="failedCount" data-target="{{ data.failed_attempts }}">{{
+                    data.failed_attempts }}</h2>
+                <div class="muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <span>Rejected credentials</span>
+                </div>
+            </div>
+
+            <!-- Suspicious IPs -->
+            <div class="stat-card accent-cyan tilt-card">
+                <div class="stat-card-accent"></div>
+                <div class="stat-card-header">
+                    <p>Suspicious IPs</p>
+                    <div class="stat-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                        </svg>
+                    </div>
+                </div>
+                <h2 class="stat-value counter-value" data-target="{{ data.suspicious_ips }}">{{ data.suspicious_ips }}
+                </h2>
+
+                <div class="muted">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    </svg>
+                    <span>Exceeded attack threshold</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Grid (Dual Charts) -->
+        {% set high_count = data.ip_analysis | selectattr('risk', 'equalto', 'HIGH') | list | length %}
+        {% set med_count = data.ip_analysis | selectattr('risk', 'equalto', 'MEDIUM') | list | length %}
+        {% set low_count = data.ip_analysis | selectattr('risk', 'equalto', 'LOW') | list | length %}
+
+        <section class="analytics-grid">
+            <!-- Chart 1: Successful vs Failed Logins -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Login Activity Comparison</h2>
+                        <p>Successful authentications versus rejected login attempts.</p>
+                    </div>
+                    <span class="badge">AUTHENTICATION TELEMETRY</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="loginChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Chart 2: Suspicious IP Risk Distribution -->
+            <div class="panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>IP Risk Distribution</h2>
+                        <p>Severity categorization of failure origins.</p>
+                    </div>
+                    <span class="badge">THREAT SPREAD</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="riskDistributionChart" data-high="{{ high_count }}" data-medium="{{ med_count }}"
+                        data-low="{{ low_count }}"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Login Activity Table -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Recent Login Activity</h2>
+                    <p>Latest authentication events recorded across all client endpoints.</p>
+                </div>
+                <div class="actions">
+                    <a href="{{ url_for('log_analysis') }}" class="btn btn-secondary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        View Full Log Analysis
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Username</th>
+                            <th>IP Address</th>
+                            <th>Authentication Result</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in data.records[-6:]|reverse %}
+                        <tr>
+                            <td>
+                                <span
+                                    style="font-family: var(--font-mono); color: var(--text-secondary); font-size: 12px; font-weight: 500;">
+                                    {{ record.timestamp }}
+                                </span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--text-main);">{{ record.username }}</strong>
+                            </td>
+                            <td>
+                                <span class="code-pill">{{ record.ip_address }}</span>
+                            </td>
+                            <td>
+                                {% if record.status == "SUCCESS" %}
+                                <span class="status-badge success">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polyline points="20 6 9 17 4 12" />
+                                    </svg>
+                                    SUCCESS
+                                </span>
+                                {% else %}
+                                <span class="risk-label high">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                    FAILED
+                                </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 20px;">No
+                                recent login events available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Security Alerts: Detected Brute-Force Attacks -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Detected Brute-Force Incidents</h2>
+                    <p>Source IP addresses that exceeded the threshold within the configured sliding time window.</p>
+                </div>
+                <div class="actions">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <polyline points="23 4 23 10 17 10" />
+                            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                        </svg>
+                        Refresh
+                    </a>
+                    <a href="/download-report" class="btn btn-secondary">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="7 10 12 15 17 10" />
+                            <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
+                        Export CSV
+                    </a>
+                </div>
+            </div>
+
+            {% if data.alerts %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Burst Attempts</th>
+                            <th>Time Window</th>
+                            <th>Risk Score</th>
+                            <th>Severity</th>
+                            <th>Incident Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for alert in data.alerts %}
+                        <tr>
+                            <td>
+                                <span class="code-pill">{{ alert.ip }}</span>
+                            </td>
+                            <td>
+                                <strong style="color: var(--threat); font-size: 14px;">{{ alert.attempts }}</strong>
+                                failed
+                            </td>
+                            <td>
+                                <span style="color: var(--text-secondary); font-weight: 600;">{{ alert.time_window }}
+                                    seconds</span>
+                            </td>
+                            <td>
+                                <div class="risk-cell">
+                                    <div
+                                        style="display: flex; justify-content: space-between; font-size: 11px; font-weight: 700;">
+                                        <span style="color: var(--threat);">Score</span>
+                                        <span>{{ alert.risk_score }}/100</span>
+                                    </div>
+                                    <div class="risk-bar-bg">
+                                        <div class="risk-bar-fill" style="width: {{ alert.risk_score }}%;"></div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="risk-label high">
+                                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="3">
+                                        <polygon
+                                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                    {{ alert.risk }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="detected">
+                                    <span class="detected-dot"></span>
+                                    Brute-Force Flagged
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                </div>
+                <h3>No Brute-Force Pattern Detected</h3>
+                <p>All recorded authentication attempts are within normal threshold parameters. No IP has triggered an
+                    alert.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- IP Address Analysis Table -->
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Source IP Risk Profiling</h2>
+                    <p>Total failed login count categorized by source IP address.</p>
+                </div>
+                <span class="badge">IP REPUTATION</span>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>IP Address</th>
+                            <th>Total Failed Attempts</th>
+                            <th>Assigned Risk Category</th>
+                            <th>Detection Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in data.ip_analysis %}
+                        <tr>
+                            <td><span class="code-pill">{{ item.ip }}</span></td>
+                            <td><strong>{{ item.failed_attempts }}</strong> fails</td>
+                            <td>
+                                <span class="risk-label {{ item.risk|lower }}">
+                                    {{ item.risk }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if item.detected %}
+                                <span class="detected">
+                                    <span class="detected-dot"></span> Flagged
+                                </span>
+                                {% else %}
+                                <span
+                                    style="color: var(--text-muted); font-size: 12px; font-weight: 600;">Standard</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">No IP
+                                activity records available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Bottom Grid: Detection Rules & System Information -->
+        <section class="bottom-grid">
+            <div class="panel">
+                <div class="panel-heading" style="margin-bottom: 12px;">
+                    <div>
+                        <h2>Active Detection Rules</h2>
+                        <p>Real-time algorithm parameterization</p>
+                    </div>
+                </div>
+
+                <div class="rule">
+                    <span>Threshold Trigger</span>
+                    <strong>{{ data.max_attempts }} consecutive fails</strong>
+                </div>
+
+                <div class="rule">
+                    <span>Observation Window</span>
+                    <strong>{{ data.time_window }} seconds</strong>
+                </div>
+
+                <div class="rule">
+                    <span>Evaluation Algorithm</span>
+                    <strong>Sliding Window (O(n log n))</strong>
+                </div>
+
+                <div class="rule">
+                    <span>Target Identifiers</span>
+                    <strong>Source IP Address</strong>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-heading" style="margin-bottom: 12px;">
+                    <div>
+                        <h2>System Information</h2>
+                        <p>Core pipeline health and status</p>
+                    </div>
+                </div>
+
+                <div class="system-row">
+                    <span>CSV Log Parser</span>
+                    <span class="tag-green">Ready & Validated</span>
+                </div>
+
+                <div class="system-row">
+                    <span>Sliding Window Engine</span>
+                    <span class="tag-green">Active</span>
+                </div>
+
+                <div class="system-row">
+                    <span>Session Storage</span>
+                    <span class="tag-blue">Flask Session</span>
+                </div>
+
+                <div class="system-row">
+                    <span>Active Dataset</span>
+                    <span class="code-pill">{{ data.source_file }}</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            <div>LOGIN ATTACK DETECTOR &bull; <span>CYBERSECURITY DEFENSE SYSTEM</span></div>
+            <div>Educational & Analytical Dashboard</div>
+        </footer>
+
+        {% else %}
+        <div class="error-message">
+            Dashboard data is unavailable. Please check your CSV log file or click <a href="/reset-demo"
+                style="color: inherit; text-decoration: underline; margin-left: 6px;">Reset Demo Data</a>.
+        </div>
+        {% endif %}
+    </main>
+
+    <!-- Chart.js & Application Script -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
